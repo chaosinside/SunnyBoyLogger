@@ -19,13 +19,13 @@ The instructions below will guide you toward getting the app running on your PC.
     
 ### Add your configuration to .env
     $ vi .env
-    DB_HOST=<the hostname or ipaddress of your database server (optional: default="localhost")>
-    DB_DATABASE=<the name of your database>
-    DB_USERNAME=<the username used to connect to the database>
-    DB_PASSWORD=<the password for the username used to connect to the database>
-    SB_HOST=<the ip address of your SunnyBoy inverter>
-    SB_USERNAME=<the username used to login to your inverter (optional: default="usr")>
-    SB_PASSWORD=<the password used to login to your inverter>
+    DB_HOST="database hostname or ipaddress ("localhost" if not specified)"
+    DB_DATABASE="database name"
+    DB_USERNAME="database username"
+    DB_PASSWORD="database password"
+    SB_HOST="sunnyboy inverter ip address or hostname"
+    SB_USERNAME="sunnyboy inverter username ("usr" if not specified)"
+    SB_PASSWORD="sunnyboy inverter password"
 
 ### Run the app with a date as input
     $ npm start 1/1/1970
