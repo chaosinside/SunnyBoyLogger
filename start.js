@@ -2,23 +2,23 @@ import ProductionModel from "./productionModel";
 import { dbconnection } from "./dbconnect";
 import SunnyBoy from "./sunnyboy";
 
-// initialize models
+// initialize model
 const Production = ProductionModel.init(dbconnection);
 Production.sync();
 
-// start and end times for data
+// get start and end times
 const dateString = process.argv[2];
 const start_day = new Date(dateString); // this is timezone aware
 if (start_day instanceof Date && !isNaN(start_day.valueOf()) == false) {
 	console.error("Error: Date input is not valid.");
 	process.exit(1);
 }
-
 const start_at = start_day.getTime() / 1000;
-console.log(`Start UTC: ${start_day.toUTCString()} (${start_at})`);
+console.log(`Start Time: ${start_day.toUTCString()} (${start_at})`);
 const end_at = start_at + 86400;
-console.log(`End UTC: ${new Date(end_at*1000).toUTCString()} (${end_at})`);
+console.log(`End Time: ${new Date(end_at*1000).toUTCString()} (${end_at})`);
 
+// login
 const host = process.env.SB_HOST;
 const username = process.env.SB_USERNAME || "usr";
 const password = process.env.SB_PASSWORD;
@@ -32,7 +32,6 @@ SunnyBoy.login(host, username, password)
 		console.error("Error: Unable to get SID:", response.data);
 		process.exit(1);
 	}
-	
 	// get serial
 	SunnyBoy.getValues(host, sid, ["6800_00A21E00"])
 	.then((response) => {
@@ -54,16 +53,18 @@ SunnyBoy.login(host, username, password)
 					.then(() => recordsAdded++)
 					.catch((response) => {
 						if (response.toString().includes("SequelizeUniqueConstraintError")) {
-							console.error(`FAILED: Record at ${datetime} already exists.`);
+							console.warn(`Insert failed: Record at ${datetime} already exists.`);
 						}
 						else {
-							console.error(`FAILED: datetime: ${datetime}, response: ${response}`);
+							console.error(`Insert failed: datetime: ${datetime}, response: ${response}`);
 						}
 					});
 				}
 			});
-			Promise.all(promise)
-			.then(() => console.log("Records added:", recordsAdded));
+			Promise.all(promise).then(() => {
+				console.log("Records added:", recordsAdded);
+				process.exit(0);
+			});
 		});
 	});
 })
