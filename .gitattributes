@@ -1,0 +1,6 @@
+# Enfore LF line endings
+* text eol=lf
+
+# Do not modify these files
+*.png binary
+*.jpg binary
