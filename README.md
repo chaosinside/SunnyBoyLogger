@@ -1,5 +1,5 @@
 # SunnyBoyLogger
-This app will connect to a SunnyBoy inverter, grab the production logs for a day, and stores them to a mysql database.
+This app will connect to a SunnyBoy inverter, grab the production logs for a day, and store them to a mysql database.
 
 ## Getting Started
 The instructions below will guide you toward getting the app running on your PC.
@@ -14,14 +14,14 @@ The instructions below will guide you toward getting the app running on your PC.
     $ git clone https://github.com/chaosinside/SunnyBoyLogger.git
 
 ### Add your configuration to .env
-		$ vi .env
-		DB_HOST=<the hostname or ipaddress of your database server (optional: default="localhost")>
-		DB_DATABASE=<the name of your database>
-		DB_USERNAME=<the username used to connect to the database>
-		DB_PASSWORD=<the password for the username used to connect to the database>
-		SB_HOST=<the ip address of your SunnyBoy inverter>
-		SB_USERNAME=<the username used to login to your inverter (optional: default="usr")>
-		SB_PASSWORD=<the password used to login to your inverter>
+    $ vi .env
+    DB_HOST=<the hostname or ipaddress of your database server (optional: default="localhost")>
+    DB_DATABASE=<the name of your database>
+    DB_USERNAME=<the username used to connect to the database>
+    DB_PASSWORD=<the password for the username used to connect to the database>
+    SB_HOST=<the ip address of your SunnyBoy inverter>
+    SB_USERNAME=<the username used to login to your inverter (optional: default="usr")>
+    SB_PASSWORD=<the password used to login to your inverter>
 
 ### Install project packages
     $ cd SunnyBoyLogger
@@ -33,10 +33,10 @@ The instructions below will guide you toward getting the app running on your PC.
 ## Table information
 The output table will be created automatically upon first run and is named "production". All you need to set is a database name, login, and password (unless your database is not running on localhost, in which case you would also need to provide DB_HOST) in the .env file.
 
-* inverterid: The serial number of your inverter.
-* datetime: The datetime in UTC of the record.
-* v: I assume this is the voltage reading at time of record.
-* kw: This is calculated from v, and is the kw output at time of record. For the to be honestly know, the inverter should provide amps along with v, but it doesn't do that.
+* **inverterid**: The serial number of your inverter.
+* **datetime**: The datetime in UTC of the record.
+* **v**: I assume this is the voltage reading at time of record.
+* **kw**: This is calculated from v, and is the kw output at time of record. For the to be honestly know, the inverter should provide amps along with v, but it doesn't do that.
 
 There is a unique constraint on the combined fields inverterid and datetime in order to prevent duplicate records. Aside from the obvious primary key "id", there are also createdAt and updatedAt fields for your convenience.
 
