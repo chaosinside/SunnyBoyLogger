@@ -13,6 +13,10 @@ The instructions below will guide you toward getting the app running on your PC.
 ### Clone this repository
     $ git clone https://github.com/chaosinside/SunnyBoyLogger.git
 
+### Install project packages
+    $ cd SunnyBoyLogger
+    $ npm install
+    
 ### Add your configuration to .env
     $ vi .env
     DB_HOST=<the hostname or ipaddress of your database server (optional: default="localhost")>
@@ -22,10 +26,6 @@ The instructions below will guide you toward getting the app running on your PC.
     SB_HOST=<the ip address of your SunnyBoy inverter>
     SB_USERNAME=<the username used to login to your inverter (optional: default="usr")>
     SB_PASSWORD=<the password used to login to your inverter>
-
-### Install project packages
-    $ cd SunnyBoyLogger
-    $ npm install
 
 ### Run the app with a date as input
     $ npm start 1/1/1970
