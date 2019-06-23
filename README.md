@@ -1,5 +1,5 @@
 # SunnyBoyLogger
-This app will connect to a SunnyBoy inverter, grab the production logs for a day, and store them to a mysql database.
+This app connects to a SunnyBoy inverter, grabs the production logs for a day, and stores them to a mysql database. It is intended to be ran once per day via cron or task scheduler.
 
 ## Getting Started
 The instructions below will guide you toward getting the app running on your PC.
