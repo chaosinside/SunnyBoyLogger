@@ -1,3 +1,4 @@
+import fs from "fs";
 import ProductionModel from "./productionModel";
 import { dbconnection } from "./dbconnect";
 import SunnyBoy from "./sunnyboy";
@@ -14,9 +15,21 @@ if (start_day instanceof Date && !isNaN(start_day.valueOf()) == false) {
 	process.exit(1);
 }
 const start_at = start_day.getTime() / 1000;
-console.log(`Start Time: ${start_day.toUTCString()} (${start_at})`);
 const end_at = start_at + 86400;
-console.log(`End Time: ${new Date(end_at*1000).toUTCString()} (${end_at})`);
+
+// initialize logging
+const logdir = process.env.LOGDIR || null;
+let logstream = null;
+if (logdir != null) {
+	if (!fs.existsSync(logdir)) { fs.mkdirSync(logdir); }
+	const logDateYmd = formatDateYmd(start_day);
+	const logfile = logdir +"/"+ logDateYmd +".log";
+	logstream = fs.createWriteStream(logfile, {flags: "a"});
+}
+
+logger("Getting production logs.");
+logger(`Start At: ${start_day.toUTCString()} (${start_at})`);
+logger(`End At: ${new Date(end_at*1000).toUTCString()} (${end_at})`);
 
 // login
 const host = process.env.SB_HOST;
@@ -25,11 +38,11 @@ const password = process.env.SB_PASSWORD;
 SunnyBoy.login(host, username, password)
 .then((response) => {
 	let sid = null;
-	if (response.data.result && response.data.result.sid) { 
-		sid = response.data.result.sid; 
+	if (response.data.result && response.data.result.sid) {
+		sid = response.data.result.sid;
 	}
 	else {
-		console.error("Error: Unable to get SID:", response.data);
+		logger(`Error: Unable to get SID: ${response.data}`, "error");
 		process.exit(1);
 	}
 	// get serial
@@ -48,27 +61,45 @@ SunnyBoy.login(host, username, password)
 				const previousValue = logArray[index-1] ? logArray[index-1].v : null;
 				if (previousValue) {
 					const v = log.v;
-					const kw = parseFloat(((log.v - previousValue) * mysteryConstant).toFixed(3));
-					return Production.create({ inverterid, datetime, v, kw })
-					.then(() => recordsAdded++)
-					.catch((response) => {
-						if (response.toString().includes("SequelizeUniqueConstraintError")) {
-							console.warn(`Insert failed: Record at ${datetime} already exists.`);
-						}
-						else {
-							console.error(`Insert failed: datetime: ${datetime}, response: ${response}`);
-						}
-					});
+					if (v != null) {
+						const kw = parseFloat(((log.v - previousValue) * mysteryConstant).toFixed(3));
+						const record = { inverterid, datetime, v, kw };
+						return Production.create(record)
+						.then(() => recordsAdded++)
+						.catch((response) => {
+							if (response.toString().includes("SequelizeUniqueConstraintError")) {
+								logger(`Record at ${datetime} already exists. Skipping.`);
+							}
+							else {
+								logger(`Insert failed: ${JSON.stringify(record)}, ${response}`, "error");
+							}
+						});
+					}
+					else { logger(`Record at ${datetime} has a null voltage value. Skipping.`); }
 				}
 			});
 			Promise.all(promise).then(() => {
-				console.log("Records added:", recordsAdded);
-				process.exit(0);
+				logger("Records added: "+ recordsAdded);
 			});
 		});
 	});
 })
 .catch((error) => {
-	console.error("Error: Login failure:", error);
+	logger("Login failure: "+ error.toString(), "error");
 	process.exit(1);
 });
+
+function formatDateYmd(date) {
+	let month = ""+ (date.getMonth() + 1);
+	let day = ""+ date.getDate();
+	const year = date.getFullYear();
+	if (month.length < 2) month = "0"+ month;
+	if (day.length < 2) day = "0"+ day;
+	return [year, month, day].join("-");
+}
+
+function logger(message, level="info") {
+	let logmsg = level.toUpperCase() +": "+ message;
+	console.log(logmsg);
+	if (logstream != null) { logstream.write(logmsg +"\n"); }
+}
