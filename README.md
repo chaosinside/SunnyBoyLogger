@@ -6,9 +6,17 @@ The instructions below will guide you toward getting the app running on your PC.
 
 ### Requirements
 *  Node.js
+*  a MySQL server
 
 ### Download and install Node.js
     https://nodejs.org/en/download/
+
+### Install or setup MySQL Server
+If you don't already have a connection to a MySQL database that you want to log this to, then you should just install and configure a local server.
+
+    https://dev.mysql.com/downloads/mysql/
+
+The program will automatically create the table `production` on the database specified by your .env file (see below) if it does not already exist.
 
 ### Clone this repository
     $ git clone https://github.com/chaosinside/SunnyBoyLogger.git
@@ -41,6 +49,16 @@ The output table will be created automatically upon first run and is named "prod
 
 There is a unique constraint on the combined fields inverterid and datetime in order to prevent duplicate records. Aside from the obvious primary key "id", there are also createdAt and updatedAt fields for your convenience.
 
+## Scheduling
+
+### Windows
+If you want to schedule this task to run in Windows, I have created a handy batch file for you that you can use for task scheduler. In Task Scheduler, simply create a task to run `log-yesterday.bat` once a day.
+
+### Linux/Mac
+Just add a line to /etc/crontab to run this script once a day passing in yesterday's date.
+
+    0 12 * * * /your/path/npm start \`date -d "yesterday 13:00" '+%m/%d/%Y'\`
+
 ## More Info
 
 ### The kW calculation
@@ -48,3 +66,10 @@ The app attempts to calculate the kW values, however, these don't seem to be exa
 
 ### LOGDIR
 If LOGDIR is not specified in the .env file, the program will only output to console. When it is specified, messages will go both to console and to the log file. The logfiles created will be named in YYYY-MM-DD format based on the date input when running the program. It is recommended to use relative pathnames here. In .gitignore the "./logs" folder is automatically ignored.
+
+### Error: Unable to get SID
+If running this program has worked in the past, but you run the script too many times within a certain time period, you will get the following error:
+
+    ERROR: Error: Unable to get SID: {"err":503}
+
+If this happens, just wait an hour or so and run it again.

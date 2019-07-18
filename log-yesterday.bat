@@ -1,0 +1,1 @@
+powershell -Command "npm start (Get-Date).AddDays(-1).ToString(\"MM/dd/yyyy\")"
