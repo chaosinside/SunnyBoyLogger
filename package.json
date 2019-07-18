@@ -30,6 +30,6 @@
     "esm": "^3.2.25",
     "fs": "0.0.1-security",
     "mysql2": "^1.6.5",
-    "sequelize": "^5.8.10"
+    "sequelize": "^5.10.1"
   }
 }

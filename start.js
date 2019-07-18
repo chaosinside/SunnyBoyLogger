@@ -42,7 +42,7 @@ SunnyBoy.login(host, username, password)
 		sid = response.data.result.sid;
 	}
 	else {
-		logger(`Error: Unable to get SID: ${response.data}`, "error");
+		logger(`Error: Unable to get SID: ${JSON.stringify(response.data)}`, "error");
 		process.exit(1);
 	}
 	// get serial
