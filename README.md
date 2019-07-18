@@ -57,7 +57,7 @@ If you want to schedule this task to run in Windows, I have created a handy batc
 ### Linux/Mac
 Just add a line to /etc/crontab to run this script once a day passing in yesterday's date.
 
-    0 12 * * * /your/path/npm start \`date -d "yesterday 13:00" '+%m/%d/%Y'\`
+    0 12 * * * /your/path/npm start `date -d "yesterday 13:00" '+%m/%d/%Y'`
 
 ## More Info
 
