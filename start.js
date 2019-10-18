@@ -48,12 +48,13 @@ SunnyBoy.login(host, username, password)
 	// get serial
 	SunnyBoy.getValues(host, sid, ["6800_00A21E00"])
 	.then((response) => {
-		const inverterid = response.data.result["013A-769D5712"]["6800_00A21E00"]["1"][0]["val"].toString();
+		const inverter_key = Object.keys(response.data.result)[0];
+		const inverterid = response.data.result[inverter_key]["6800_00A21E00"]["1"][0]["val"].toString();
 		// get production data
 		const sb_start_at = start_at - 300; // start 5 minutes earlier because delta is required
 		SunnyBoy.getLogs(host, sid, sb_start_at, end_at)
 		.then((response) => {
-			const data = response.data.result["013A-769D5712"];
+			const data = response.data.result[inverter_key];
 			const mysteryConstant = 0.012; // to convert inverter power data to kW.
 			let recordsAdded = 0;
 			const promise = data.map((log, index, logArray) => {
