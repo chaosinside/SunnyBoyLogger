@@ -24,7 +24,7 @@ The program will automatically create the table `production` on the database spe
 ### Install project packages
     $ cd SunnyBoyLogger
     $ npm install
-    
+
 ### Add your configuration to .env
     $ vi .env
     DB_HOST="database ip address or hostname" ("localhost" if not specified)
@@ -44,10 +44,10 @@ The output table will be created automatically upon first run and is named "prod
 
 * **inverterid**: The serial number of your inverter.
 * **datetime**: The datetime in UTC of the record.
-* **v**: I assume this is the voltage reading at time of record.
-* **kw**: This is calculated from v, and is the kw output at time of record. For the to be honestly know, the inverter should provide amps along with v, but it doesn't do that.
+* **v**: I assume this is the 'watts produced' reading at time of record. This is an ever increasing number.
+* **kw**: This is calculated from v, and is the kw output at time of record.
 
-There is a unique constraint on the combined fields inverterid and datetime in order to prevent duplicate records. Aside from the obvious primary key "id", there are also createdAt and updatedAt fields for your convenience.
+There is a unique constraint on the combined fields inverterid and datetime in order to prevent duplicate records. Aside from the primary key `id`, there are also `createdAt` and `updatedAt` fields for your convenience.
 
 ## Scheduling
 
@@ -66,10 +66,3 @@ The app attempts to calculate the kW values, however, these don't seem to be exa
 
 ### LOGDIR
 If LOGDIR is not specified in the .env file, the program will only output to console. When it is specified, messages will go both to console and to the log file. The logfiles created will be named in YYYY-MM-DD format based on the date input when running the program. It is recommended to use relative pathnames here. In .gitignore the "./logs" folder is automatically ignored.
-
-### Error: Unable to get SID
-If running this program has worked in the past, but you run the script too many times within a certain time period, you will get the following error:
-
-    ERROR: Error: Unable to get SID: {"err":503}
-
-If this happens, just wait an hour or so and run it again.
