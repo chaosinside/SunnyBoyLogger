@@ -10,6 +10,15 @@ export default class SunnyBoy {
 		return await axios.post(hostURL, body, { httpsAgent }).then((response) => response);
 	}
 
+	// logout
+	static async logout(host, sid) {
+		const hostURL = "https://"+ host +"/dyn/logout.json";
+		const body = {};
+		const httpsAgent = new https.Agent({ rejectUnauthorized: false }); // skip SSL verification
+		const params = { sid };
+		return await axios.post(hostURL, body, { httpsAgent, params }).then((response) => response);
+	}
+
 	// get values
 	static async getValues(host, sid, keys) {
 		const hostURL = "https://"+ host +"/dyn/getValues.json";

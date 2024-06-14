@@ -1,7 +1,7 @@
 import Sequelize from "sequelize";
 
 // get connection params
-require("dotenv").config();
+import 'dotenv/config'
 const host = process.env.DB_HOST || "localhost";
 const db = process.env.DB_DATABASE;
 const username = process.env.DB_USERNAME;

@@ -1,7 +1,7 @@
 import fs from "fs";
-import ProductionModel from "./productionModel";
-import { dbconnection } from "./dbconnect";
-import SunnyBoy from "./sunnyboy";
+import ProductionModel from "./productionModel.js";
+import { dbconnection } from "./dbconnect.js";
+import SunnyBoy from "./sunnyboy.js";
 
 // initialize model
 const Production = ProductionModel.init(dbconnection);
@@ -27,6 +27,7 @@ if (logdir != null) {
 	logstream = fs.createWriteStream(logfile, {flags: "a"});
 }
 
+logger(`Time Now: ${new Date().toUTCString()}`)
 logger("Getting production logs.");
 logger(`Start At: ${start_day.toUTCString()} (${start_at})`);
 logger(`End At: ${new Date(end_at*1000).toUTCString()} (${end_at})`);
@@ -55,7 +56,6 @@ SunnyBoy.login(host, username, password)
 		SunnyBoy.getLogs(host, sid, sb_start_at, end_at)
 		.then((response) => {
 			const data = response.data.result[inverter_key];
-			const mysteryConstant = 0.012; // to convert inverter power data to kW.
 			let recordsAdded = 0;
 			const promise = data.map((log, index, logArray) => {
 				const datetime = new Date(log.t * 1000);
@@ -63,7 +63,8 @@ SunnyBoy.login(host, username, password)
 				if (previousValue) {
 					const v = log.v;
 					if (v != null) {
-						const kw = parseFloat(((log.v - previousValue) * mysteryConstant).toFixed(3));
+						// converts watts reported 12 times per hour (every 5 minutes) to kW
+						const kw = parseFloat(((log.v - previousValue) * 0.012).toFixed(3));
 						const record = { inverterid, datetime, v, kw };
 						return Production.create(record)
 						.then(() => recordsAdded++)
@@ -81,6 +82,7 @@ SunnyBoy.login(host, username, password)
 			});
 			Promise.all(promise).then(() => {
 				logger("Records added: "+ recordsAdded);
+				SunnyBoy.logout(host, sid);
 			});
 		});
 	});
