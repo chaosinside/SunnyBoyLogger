@@ -36,7 +36,10 @@ The program will automatically create the table `production` on the database spe
     SB_PASSWORD="sunnyboy inverter password (required)"
     LOGDIR="directory for log files (messages will go to console only if not specified)"
 
-### Run the app with a date as input
+### Run the app
+    $ npm start
+
+#### or with a date as input
     $ npm start 1/1/1970
 
 ## Table information
@@ -52,12 +55,12 @@ There is a unique constraint on the combined fields inverterid and datetime in o
 ## Scheduling
 
 ### Windows
-If you want to schedule this task to run in Windows, I have created a handy batch file for you that you can use for task scheduler. In Task Scheduler, simply create a task to run `log-yesterday.bat` once a day.
+If you want to schedule this task to run in Windows, then open Task Scheduler and create a task to run `log.bat`. This will query your database for the last known time entry and attempt to retreive everything from that time until now.
 
 ### Linux/Mac
-Just add a line to /etc/crontab to run this script once a day passing in yesterday's date.
+Just add a line to `/etc/crontab` like below.
 
-    0 12 * * * /your/path/npm start `date -d "yesterday 13:00" '+%m/%d/%Y'`
+    0 12 * * * /your/path/npm start
 
 ## More Info
 
@@ -65,4 +68,4 @@ Just add a line to /etc/crontab to run this script once a day passing in yesterd
 The app attempts to calculate the kW values, however, these don't seem to be exactly consistentent with what I'm seeing on the inverter's webpage. I've spent a significant amount of time trying to match these values up exactly with what the "PV Power" section shows and have not quite figured out that secret sauce yet. The kW values are close enough for now.
 
 ### LOGDIR
-If LOGDIR is not specified in the .env file, the program will only output to console. When it is specified, messages will go both to console and to the log file. The logfiles created will be named in YYYY-MM-DD format based on the date input when running the program. It is recommended to use relative pathnames here. In .gitignore the "./logs" folder is automatically ignored.
+If LOGDIR is not specified in the .env file, the program will only output to console. When it is specified, messages will go both to console and to the log file. The logfiles created will be named in YYYY-MM-DD format based on the date when the program executed. It is recommended to use relative pathnames here. In .gitignore the "./logs" folder is automatically ignored.
